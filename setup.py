@@ -9,7 +9,7 @@ setup(
     description='Python binary struct extension',
     author='Thomas Bonim',
     author_email='thomas.bonim@googlemail.com',
-    long_description='A Python module for binary data struct',
+    long_description='Python module for unpacking binary data from byte strings.',
     url='https://github.com/tbonim/binstruct',
     license="Public domain",
     ext_modules=[binstruct],

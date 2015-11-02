@@ -57,6 +57,24 @@ class TestObject(unittest.TestCase):
         self.assertEqual(self.obj.pos, 0)
 
 
+class TestSubclass(unittest.TestCase):
+    class Subclass(binstruct.Binstruct):
+        def __init__(self, data, ext):
+            super(TestSubclass.Subclass, self).__init__(data)
+            self.ext = ext
+
+        def method(self):
+            self.pos += 1
+
+    def test_subclass(self):
+        obj = TestSubclass.Subclass(b"\x11\x22", 0)
+        self.assertEqual(obj.data, b"\x11\x22")
+        self.assertEqual(obj.pos, 0)
+        self.assertEqual(obj.ext, 0)
+        obj.method()
+        self.assertEqual(obj.pos, 1)
+
+
 class TestEmpty(unittest.TestCase):
     def test_range_u8(self):
         obj = binstruct.Binstruct(b"")
@@ -125,7 +143,6 @@ class TestUnpackBE(unittest.TestCase):
     def test_ube32(self):
         value = self.obj.unpack_ube32()
         self.assertEqual(value, 0x81828384)
-        self.assertIsInstance(value, int)
         self.assertEqual(self.obj.pos, 4)
 
     def test_sbe32(self):
@@ -166,7 +183,6 @@ class TestUnpackLE(unittest.TestCase):
     def test_ule32(self):
         value = self.obj.unpack_ule32()
         self.assertEqual(value, 0x84838281)
-        self.assertIsInstance(value, int)
         self.assertEqual(self.obj.pos, 4)
 
     def test_sle32(self):
@@ -465,10 +481,10 @@ class TestUnpackBlock64(unittest.TestCase):
         self.assertEqual(obj.pos, 8)
 
     def test_error(self):
-        obj = binstruct.Binstruct(b"\x05\x00\x00\x00\x00\x00\x00\x00test")
+        obj = binstruct.Binstruct(b"\x00\x00\x00\x00\x00\x00\x00\x05test")
         with self.assertRaises(binstruct.error):
             obj.unpack_block_be64()
-        obj = binstruct.Binstruct(b"\x00\x00\x00\x05\x00\x00\x00\x00test")
+        obj = binstruct.Binstruct(b"\x05\x00\x00\x00\x00\x00\x00\x00test")
         with self.assertRaises(binstruct.error):
             obj.unpack_block_le64()
         obj = binstruct.Binstruct(b"")

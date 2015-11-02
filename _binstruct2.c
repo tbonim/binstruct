@@ -8,9 +8,9 @@
 #include <Python.h>
 #include <stddef.h>
 #include <string.h>
-#include "endian.h"
 
 #ifdef _MSC_VER
+#include <stdlib.h>
 typedef signed __int8  int8_t;
 typedef signed __int16 int16_t;
 typedef signed __int32 int32_t;
@@ -20,9 +20,15 @@ typedef unsigned __int16 uint16_t;
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
 #define U64(u) (u##ui64)
+#define byte_swap_u16   _byteswap_ushort
+#define byte_swap_u32   _byteswap_ulong
+#define byte_swap_u64   _byteswap_ui64
+#define inline __inline
 #else
 #include <stdint.h>
-#include <stdbool.h>
+#define byte_swap_u16   __builtin_bswap16
+#define byte_swap_u32   __builtin_bswap32
+#define byte_swap_u64   __builtin_bswap64
 #define U64(u) (u##ULL)
 #endif
 
@@ -49,10 +55,10 @@ static void range_error(Py_ssize_t width)
 static inline int range_check(BinstructObject *self, Py_ssize_t width)
 {
     if ((self->s_len - self->s_pos) >= width)
-        return true;
+        return 1;
     else {
         range_error(width);
-        return false;
+        return 0;
     }
 }
 
@@ -61,19 +67,28 @@ static inline int range_check_and_copy(BinstructObject *self, void *dest, Py_ssi
     if ((self->s_len - self->s_pos) >= width) {
         memcpy(dest, PyString_AS_STRING(self->o_data) + self->s_pos, width);
         self->s_pos += width;
-        return true;
+        return 1;
     }
     else {
         range_error(width);
-        return false;
+        return 0;
     }
 }
 
-static inline PyObject *extend_long(long x, unsigned width) {
-    if (x & (1L << (width * 8 - 1)))
-        return PyInt_FromLong(x | ((-1L) << (width * 8)));
+static inline PyObject *to_unsigned(unsigned long value)
+{
+    if (value > LONG_MAX)
+        return PyLong_FromUnsignedLong(value);
     else
-        return PyInt_FromLong(x);
+        return PyInt_FromLong(value);
+}
+
+static inline PyObject *to_signed(unsigned long value, unsigned width)
+{
+    if (value & (1UL << (width * 8 - 1)))
+        return PyInt_FromLong(value | ((-1UL) << (width * 8)));
+    else
+        return PyInt_FromLong(value);
 }
 
 static inline PyObject *unpack_block(BinstructObject *self, Py_ssize_t len)
@@ -103,12 +118,12 @@ static inline int unpack_uleb128(BinstructObject *self, uint64_t *value)
         if (b >= 128)
             shift += 7;
         else
-            return true;
+            return 1;
     }
 
     self->s_pos = pos;
     PyErr_SetString(BinstructError, "unpack requires more data for LEB128");
-    return false;
+    return 0;
 }
 
 /* default methods */
@@ -200,9 +215,9 @@ static PyObject *s_unpack_ube16(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return PyInt_FromLong(le16toh(value));
+    return PyInt_FromLong(value);
 #else
-    return PyInt_FromLong(be16toh(value));
+    return PyInt_FromLong(byte_swap_u16(value));
 #endif
 }
 
@@ -216,9 +231,9 @@ static PyObject *s_unpack_sbe16(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return extend_long(le16toh(value), sizeof(value));
+    return to_signed(value, sizeof(value));
 #else
-    return extend_long(be16toh(value), sizeof(value));
+    return to_signed(byte_swap_u16(value), sizeof(value));
 #endif
 }
 
@@ -232,9 +247,9 @@ static PyObject *s_unpack_ube32(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return PyInt_FromLong(le32toh(value));
+    return to_unsigned(value);
 #else
-    return PyInt_FromLong(be32toh(value));
+    return to_unsigned(byte_swap_u32(value));
 #endif
 }
 
@@ -248,9 +263,9 @@ static PyObject *s_unpack_sbe32(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return extend_long(le32toh(value), sizeof(value));
+    return to_signed(value, sizeof(value));
 #else
-    return extend_long(be32toh(value), sizeof(value));
+    return to_signed(byte_swap_u32(value), sizeof(value));
 #endif
 }
 
@@ -264,9 +279,9 @@ static PyObject *s_unpack_ube64(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return PyLong_FromUnsignedLongLong(le64toh(value));
+    return PyLong_FromUnsignedLongLong(value);
 #else
-    return PyLong_FromUnsignedLongLong(be64toh(value));
+    return PyLong_FromUnsignedLongLong(byte_swap_u64(value));
 #endif
 }
 
@@ -280,9 +295,9 @@ static PyObject *s_unpack_sbe64(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return PyLong_FromLongLong(le64toh(value));
+    return PyLong_FromLongLong(value);
 #else
-    return PyLong_FromLongLong(be64toh(value));
+    return PyLong_FromLongLong(byte_swap_u64(value));
 #endif
 }
 
@@ -296,9 +311,9 @@ static PyObject *s_unpack_ule16(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return PyInt_FromLong(be16toh(value));
+    return PyInt_FromLong(byte_swap_u16(value));
 #else
-    return PyInt_FromLong(le16toh(value));
+    return PyInt_FromLong(value);
 #endif
 }
 
@@ -312,9 +327,9 @@ static PyObject *s_unpack_sle16(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return extend_long(be16toh(value), sizeof(value));
+    return to_signed(byte_swap_u16(value), sizeof(value));
 #else
-    return extend_long(le16toh(value), sizeof(value));
+    return to_signed(value, sizeof(value));
 #endif
 }
 
@@ -328,9 +343,9 @@ static PyObject *s_unpack_ule32(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return PyInt_FromLong(be32toh(value));
+    return to_unsigned(byte_swap_u32(value));
 #else
-    return PyInt_FromLong(le32toh(value));
+    return to_unsigned(value);
 #endif
 }
 
@@ -344,9 +359,9 @@ static PyObject *s_unpack_sle32(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return extend_long(be32toh(value), sizeof(value));
+    return to_signed(byte_swap_u32(value), sizeof(value));
 #else
-    return extend_long(le32toh(value), sizeof(value));
+    return to_signed(value, sizeof(value));
 #endif
 }
 
@@ -360,9 +375,9 @@ static PyObject *s_unpack_ule64(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return PyLong_FromUnsignedLongLong(be64toh(value));
+    return PyLong_FromUnsignedLongLong(byte_swap_u64(value));
 #else
-    return PyLong_FromUnsignedLongLong(le64toh(value));
+    return PyLong_FromUnsignedLongLong(value);
 #endif
 }
 
@@ -376,9 +391,9 @@ static PyObject *s_unpack_sle64(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return PyLong_FromLongLong(be64toh(value));
+    return PyLong_FromLongLong(byte_swap_u64(value));
 #else
-    return PyLong_FromLongLong(le64toh(value));
+    return PyLong_FromLongLong(value);
 #endif
 }
 
@@ -497,9 +512,9 @@ static PyObject *s_unpack_block_be16(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return unpack_block(self, le16toh(len));
+    return unpack_block(self, len);
 #else
-    return unpack_block(self, be16toh(len));
+    return unpack_block(self, byte_swap_u16(len));
 #endif
 }
 
@@ -513,9 +528,9 @@ static PyObject *s_unpack_block_be32(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return unpack_block(self, le32toh(len));
+    return unpack_block(self, len);
 #else
-    return unpack_block(self, be32toh(len));
+    return unpack_block(self, byte_swap_u32(len));
 #endif
 }
 
@@ -529,9 +544,9 @@ static PyObject *s_unpack_block_be64(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return unpack_block(self, (Py_ssize_t)le64toh(len));
+    return unpack_block(self, (Py_ssize_t)len);
 #else
-    return unpack_block(self, (Py_ssize_t)be64toh(len));
+    return unpack_block(self, (Py_ssize_t)byte_swap_u64(len));
 #endif
 }
 
@@ -545,9 +560,9 @@ static PyObject *s_unpack_block_le16(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return unpack_block(self, be16toh(len));
+    return unpack_block(self, byte_swap_u16(len));
 #else
-    return unpack_block(self, le16toh(len));
+    return unpack_block(self, len);
 #endif
 }
 
@@ -561,9 +576,9 @@ static PyObject *s_unpack_block_le32(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return unpack_block(self, be32toh(len));
+    return unpack_block(self, byte_swap_u32(len));
 #else
-    return unpack_block(self, le32toh(len));
+    return unpack_block(self, len);
 #endif
 }
 
@@ -577,9 +592,9 @@ static PyObject *s_unpack_block_le64(BinstructObject *self, PyObject *args)
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
-    return unpack_block(self, (Py_ssize_t)be64toh(len));
+    return unpack_block(self, (Py_ssize_t)byte_swap_u64(len));
 #else
-    return unpack_block(self, (Py_ssize_t)le64toh(len));
+    return unpack_block(self, (Py_ssize_t)len);
 #endif
 }
 
