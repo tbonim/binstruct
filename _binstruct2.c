@@ -22,7 +22,7 @@ typedef unsigned __int64 uint64_t;
 #define U64(u) (u##ui64)
 #define byte_swap_u16   _byteswap_ushort
 #define byte_swap_u32   _byteswap_ulong
-#define byte_swap_u64   _byteswap_ui64
+#define byte_swap_u64   _byteswap_uint64
 #define inline __inline
 #else
 #include <stdint.h>
