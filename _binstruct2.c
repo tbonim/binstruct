@@ -167,9 +167,7 @@ static PyObject *s_unpack_u8(BinstructObject *self, PyObject *args)
 {
     const char *p;
 
-    if (!PyArg_ParseTuple(args, ":unpack_u8"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check(self, 1))
         return NULL;
 
@@ -181,9 +179,7 @@ static PyObject *s_unpack_s8(BinstructObject *self, PyObject *args)
 {
     const char *p;
 
-    if (!PyArg_ParseTuple(args, ":unpack_s8"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check(self, 1))
         return NULL;
 
@@ -195,9 +191,7 @@ static PyObject *s_unpack_bool(BinstructObject *self, PyObject *args)
 {
     const char *p;
 
-    if (!PyArg_ParseTuple(args, ":unpack_bool"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check(self, 1))
         return NULL;
 
@@ -209,9 +203,7 @@ static PyObject *s_unpack_ube16(BinstructObject *self, PyObject *args)
 {
     uint16_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_ube16"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -225,9 +217,7 @@ static PyObject *s_unpack_sbe16(BinstructObject *self, PyObject *args)
 {
     uint16_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_sbe16"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -241,9 +231,7 @@ static PyObject *s_unpack_ube32(BinstructObject *self, PyObject *args)
 {
     uint32_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_ube32"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -257,9 +245,7 @@ static PyObject *s_unpack_sbe32(BinstructObject *self, PyObject *args)
 {
     uint32_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_sbe32"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -273,9 +259,7 @@ static PyObject *s_unpack_ube64(BinstructObject *self, PyObject *args)
 {
     uint64_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_ube64"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -289,9 +273,7 @@ static PyObject *s_unpack_sbe64(BinstructObject *self, PyObject *args)
 {
     uint64_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_sbe64"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -305,9 +287,7 @@ static PyObject *s_unpack_ule16(BinstructObject *self, PyObject *args)
 {
     uint16_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_ule16"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -321,9 +301,7 @@ static PyObject *s_unpack_sle16(BinstructObject *self, PyObject *args)
 {
     uint16_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_sle16"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -337,9 +315,7 @@ static PyObject *s_unpack_ule32(BinstructObject *self, PyObject *args)
 {
     uint32_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_ule32"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -353,9 +329,7 @@ static PyObject *s_unpack_sle32(BinstructObject *self, PyObject *args)
 {
     uint32_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_sle32"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -369,9 +343,7 @@ static PyObject *s_unpack_ule64(BinstructObject *self, PyObject *args)
 {
     uint64_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_ule64"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -385,9 +357,7 @@ static PyObject *s_unpack_sle64(BinstructObject *self, PyObject *args)
 {
     uint64_t value;
 
-    if (!PyArg_ParseTuple(args, ":unpack_sle64"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &value, sizeof(value)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -401,9 +371,7 @@ static PyObject *s_unpack_uleb128(BinstructObject *self, PyObject *args)
 {
     uint64_t value = 0;
 
-    if (!PyArg_ParseTuple(args, ":unpack_uleb128"))
-        return NULL;
-
+    UNUSED(args);
     if (!unpack_uleb128(self, &value))
         return NULL;
 
@@ -420,9 +388,7 @@ static PyObject *s_unpack_sleb128(BinstructObject *self, PyObject *args)
     const char *p;
     uint8_t b;
 
-    if (!PyArg_ParseTuple(args, ":unpack_sleb128"))
-        return NULL;
-
+    UNUSED(args);
     p = PyString_AS_STRING(self->o_data);
     while (self->s_pos < self->s_len) {
         b = (uint8_t)p[self->s_pos++];
@@ -452,9 +418,7 @@ static PyObject *s_unpack_string(BinstructObject *self, PyObject *args)
     Py_ssize_t len;
     const char *p;
 
-    if (!PyArg_ParseTuple(args, ":unpack_string"))
-        return NULL;
-
+    UNUSED(args);
     len = self->s_len - self->s_pos;
     if (!len) {
         PyErr_SetString(BinstructError, "unpack requires data for string");
@@ -492,9 +456,7 @@ static PyObject *s_unpack_block_u8(BinstructObject *self, PyObject *args)
 {
     const char *p;
 
-    if (!PyArg_ParseTuple(args, ":unpack_block_u8"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check(self, 1))
         return NULL;
 
@@ -506,9 +468,7 @@ static PyObject *s_unpack_block_be16(BinstructObject *self, PyObject *args)
 {
     uint16_t len;
 
-    if (!PyArg_ParseTuple(args, ":unpack_block_be16"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -522,9 +482,7 @@ static PyObject *s_unpack_block_be32(BinstructObject *self, PyObject *args)
 {
     uint32_t len;
 
-    if (!PyArg_ParseTuple(args, ":unpack_block_be32"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -538,9 +496,7 @@ static PyObject *s_unpack_block_be64(BinstructObject *self, PyObject *args)
 {
     uint64_t len;
 
-    if (!PyArg_ParseTuple(args, ":unpack_block_be64"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -554,9 +510,7 @@ static PyObject *s_unpack_block_le16(BinstructObject *self, PyObject *args)
 {
     uint16_t len;
 
-    if (!PyArg_ParseTuple(args, ":unpack_block_le16"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -570,9 +524,7 @@ static PyObject *s_unpack_block_le32(BinstructObject *self, PyObject *args)
 {
     uint32_t len;
 
-    if (!PyArg_ParseTuple(args, ":unpack_block_le32"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -586,9 +538,7 @@ static PyObject *s_unpack_block_le64(BinstructObject *self, PyObject *args)
 {
     uint64_t len;
 
-    if (!PyArg_ParseTuple(args, ":unpack_block_le64"))
-        return NULL;
-
+    UNUSED(args);
     if (!range_check_and_copy(self, &len, sizeof(len)))
         return NULL;
 #if PY_LITTLE_ENDIAN
@@ -602,9 +552,7 @@ static PyObject *s_unpack_block_uleb128(BinstructObject *self, PyObject *args)
 {
     uint64_t len = 0;
 
-    if (!PyArg_ParseTuple(args, ":unpack_block_uleb128"))
-        return NULL;
-
+    UNUSED(args);
     if (!unpack_uleb128(self, &len))
         return NULL;
 
@@ -613,33 +561,33 @@ static PyObject *s_unpack_block_uleb128(BinstructObject *self, PyObject *args)
 
 /* methods */
 static struct PyMethodDef s_methods[] = {
-    {"unpack_u8", (PyCFunction)s_unpack_u8, METH_VARARGS, NULL},
-    {"unpack_s8", (PyCFunction)s_unpack_s8, METH_VARARGS, NULL},
-    {"unpack_bool", (PyCFunction)s_unpack_bool, METH_VARARGS, NULL},
-    {"unpack_ube16", (PyCFunction)s_unpack_ube16, METH_VARARGS, NULL},
-    {"unpack_sbe16", (PyCFunction)s_unpack_sbe16, METH_VARARGS, NULL},
-    {"unpack_ube32", (PyCFunction)s_unpack_ube32, METH_VARARGS, NULL},
-    {"unpack_sbe32", (PyCFunction)s_unpack_sbe32, METH_VARARGS, NULL},
-    {"unpack_ube64", (PyCFunction)s_unpack_ube64, METH_VARARGS, NULL},
-    {"unpack_sbe64", (PyCFunction)s_unpack_sbe64, METH_VARARGS, NULL},
-    {"unpack_ule16", (PyCFunction)s_unpack_ule16, METH_VARARGS, NULL},
-    {"unpack_sle16", (PyCFunction)s_unpack_sle16, METH_VARARGS, NULL},
-    {"unpack_ule32", (PyCFunction)s_unpack_ule32, METH_VARARGS, NULL},
-    {"unpack_sle32", (PyCFunction)s_unpack_sle32, METH_VARARGS, NULL},
-    {"unpack_ule64", (PyCFunction)s_unpack_ule64, METH_VARARGS, NULL},
-    {"unpack_sle64", (PyCFunction)s_unpack_sle64, METH_VARARGS, NULL},
-    {"unpack_uleb128", (PyCFunction)s_unpack_uleb128, METH_VARARGS, NULL},
-    {"unpack_sleb128", (PyCFunction)s_unpack_sleb128, METH_VARARGS, NULL},
-    {"unpack_string", (PyCFunction)s_unpack_string, METH_VARARGS, NULL},
+    {"unpack_u8", (PyCFunction)s_unpack_u8, METH_NOARGS, NULL},
+    {"unpack_s8", (PyCFunction)s_unpack_s8, METH_NOARGS, NULL},
+    {"unpack_bool", (PyCFunction)s_unpack_bool, METH_NOARGS, NULL},
+    {"unpack_ube16", (PyCFunction)s_unpack_ube16, METH_NOARGS, NULL},
+    {"unpack_sbe16", (PyCFunction)s_unpack_sbe16, METH_NOARGS, NULL},
+    {"unpack_ube32", (PyCFunction)s_unpack_ube32, METH_NOARGS, NULL},
+    {"unpack_sbe32", (PyCFunction)s_unpack_sbe32, METH_NOARGS, NULL},
+    {"unpack_ube64", (PyCFunction)s_unpack_ube64, METH_NOARGS, NULL},
+    {"unpack_sbe64", (PyCFunction)s_unpack_sbe64, METH_NOARGS, NULL},
+    {"unpack_ule16", (PyCFunction)s_unpack_ule16, METH_NOARGS, NULL},
+    {"unpack_sle16", (PyCFunction)s_unpack_sle16, METH_NOARGS, NULL},
+    {"unpack_ule32", (PyCFunction)s_unpack_ule32, METH_NOARGS, NULL},
+    {"unpack_sle32", (PyCFunction)s_unpack_sle32, METH_NOARGS, NULL},
+    {"unpack_ule64", (PyCFunction)s_unpack_ule64, METH_NOARGS, NULL},
+    {"unpack_sle64", (PyCFunction)s_unpack_sle64, METH_NOARGS, NULL},
+    {"unpack_uleb128", (PyCFunction)s_unpack_uleb128, METH_NOARGS, NULL},
+    {"unpack_sleb128", (PyCFunction)s_unpack_sleb128, METH_NOARGS, NULL},
+    {"unpack_string", (PyCFunction)s_unpack_string, METH_NOARGS, NULL},
     {"unpack_block", (PyCFunction)s_unpack_block, METH_VARARGS, NULL},
-    {"unpack_block_u8", (PyCFunction)s_unpack_block_u8, METH_VARARGS, NULL},
-    {"unpack_block_be16", (PyCFunction)s_unpack_block_be16, METH_VARARGS, NULL},
-    {"unpack_block_be32", (PyCFunction)s_unpack_block_be32, METH_VARARGS, NULL},
-    {"unpack_block_be64", (PyCFunction)s_unpack_block_be64, METH_VARARGS, NULL},
-    {"unpack_block_le16", (PyCFunction)s_unpack_block_le16, METH_VARARGS, NULL},
-    {"unpack_block_le32", (PyCFunction)s_unpack_block_le32, METH_VARARGS, NULL},
-    {"unpack_block_le64", (PyCFunction)s_unpack_block_le64, METH_VARARGS, NULL},
-    {"unpack_block_uleb128", (PyCFunction)s_unpack_block_uleb128, METH_VARARGS, NULL},
+    {"unpack_block_u8", (PyCFunction)s_unpack_block_u8, METH_NOARGS, NULL},
+    {"unpack_block_be16", (PyCFunction)s_unpack_block_be16, METH_NOARGS, NULL},
+    {"unpack_block_be32", (PyCFunction)s_unpack_block_be32, METH_NOARGS, NULL},
+    {"unpack_block_be64", (PyCFunction)s_unpack_block_be64, METH_NOARGS, NULL},
+    {"unpack_block_le16", (PyCFunction)s_unpack_block_le16, METH_NOARGS, NULL},
+    {"unpack_block_le32", (PyCFunction)s_unpack_block_le32, METH_NOARGS, NULL},
+    {"unpack_block_le64", (PyCFunction)s_unpack_block_le64, METH_NOARGS, NULL},
+    {"unpack_block_uleb128", (PyCFunction)s_unpack_block_uleb128, METH_NOARGS, NULL},
     {NULL, NULL}
 };
 
